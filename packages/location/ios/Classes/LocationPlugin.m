@@ -307,7 +307,12 @@
 
 - (void)locationManager:(CLLocationManager *)manager
      didUpdateLocations:(NSArray<CLLocation *> *)locations {
-  if (self.waitNextLocation > 0) {
+  if (@available(iOS 14.0, *)) {
+    CLAccuracyAuthorization accuracy = [self.clLocationManager accuracyAuthorization];
+    isReducedAccuracy = (accuracy == CLAccuracyAuthorizationReducedAccuracy);
+  }
+
+  if (!isReducedAccuracy && self.waitNextLocation > 0) {
     self.waitNextLocation -= 1;
     return;
   }
